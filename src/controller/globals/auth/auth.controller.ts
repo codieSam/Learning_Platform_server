@@ -101,9 +101,12 @@ email login (sso)
       if (isPasswordMatch) {
         //  login vayo, token generation
        const token =  jwt.sign({id: data[0].id}, "ThisIsMySecret",{expiresIn: "2minutes"})
+       console.log("Token generated: ", token);
+        // send token to client
         res.json({
           token: token,
           message: "Login successful",
+
         })
       } else {
         res.status(401).json({
