@@ -100,7 +100,7 @@ email login (sso)
       const isPasswordMatch = bcrypt.compareSync(password, data[0].password);
       if (isPasswordMatch) {
         //  login vayo, token generation
-       const token =  jwt.sign({id: data[0].id}, "ThisIsMySecret",{expiresIn: "2minutes"})
+       const token =  jwt.sign({id: data[0].id}, "ThisIsMySecret",{expiresIn: "30Days"});
        console.log("Token generated: ", token);
         // send token to client
         res.json({
