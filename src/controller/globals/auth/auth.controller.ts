@@ -92,7 +92,7 @@ email login (sso)
     });
     if (data.length == 0) {
       res.status(404).json({
-        message: "Email not registered",
+        message: "Email not registered, please register first",
       });
     } else {
       // check password   ---> password lai pahila hash ma lagney ----> ani dubai hash lai compare garney  (compareSync, compare)
