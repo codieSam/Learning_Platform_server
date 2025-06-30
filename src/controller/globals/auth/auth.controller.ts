@@ -19,6 +19,7 @@ import { Request, response, Response } from "express";
 import User from "../../../database/models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { envConfig } from "../../../config/config";
 // import { register } from "module";
 
 // JSON data --> req.body()   //username, email, password
@@ -98,16 +99,19 @@ email login (sso)
       // check password   ---> password lai pahila hash ma lagney ----> ani dubai hash lai compare garney  (compareSync, compare)
       // compareSync(plain_password, registered hashed password)
       const isPasswordMatch = bcrypt.compareSync(password, data[0].password);
+      const securityKey = envConfig.jwtSecret || "defaultSecretKey";
+      
+
       if (isPasswordMatch) {
         //  login vayo, token generation
-       const token =  jwt.sign({id: data[0].id}, "ThisIsMySecret",{expiresIn: "30Days"});
+       const token =  jwt.sign({id: data[0].id}, securityKey,{expiresIn: "30Days"});
        console.log("Token generated: ", token);
         // send token to client
         res.json({
           token: token,
-          message: "Login successful",
-
+          message: "Login successful"
         })
+        res.cookie("token", token)
       } else {
         res.status(401).json({
           message: "Invalid email or password",
