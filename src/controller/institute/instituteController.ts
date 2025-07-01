@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
 import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
+interface IExtendedRequest extends Request{
+    user? : {
+        name: string,
+        age: number
+    }
+}
 class InstituteCntroller{
-    static async createInstitute(req:Request, res:Response){
+    static async createInstitute(req:IExtendedRequest, res:Response){
         if(req.body === undefined){
             res.status(500).json({
                 message: "The body is undefned"
             })
             return 
         }
-
+        console.log(req.user, "Data from middleware")
         const {instituteName, instituteEmail, institutePhoneNumber, instituteAddress} = req.body;
         const {institutePanNo} = req.body || null;
         const {instituteVatNo} = req.body || null;
@@ -57,7 +63,21 @@ const instituteNumber = generateRandomInstituteNumber()
         })
 
     }
-     
-}
 
-export default InstituteCntroller
+    // static async createTeacherTable (req: Request, res: Response){
+    //     await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
+    //         id INT PRIMARY KEY AUTO_INCREMENT,
+    //         teacherName VARCHAR(255) NOT NULL,
+    //         teacherEmail VARCHAR(255) NOT NULL UNIQUE,
+    //         teacherPhoneNumber VRCHAR(255) NOT NULL UNIQUE
+    //         ) VALUES (?,?,?,?)`,
+            
+    //     )
+            
+    //     }
+    
+    
+    }
+
+
+        export default InstituteCntroller
