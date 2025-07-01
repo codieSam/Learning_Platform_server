@@ -2,19 +2,21 @@ import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { envConfig } from "../config/config"
 import User from "../database/models/user.model"
+import { IExtendedRequest } from "./type"
 
 
 //IExtendedRequest ko thau ma j lekhe pani hunxa 
 // Typescript ma Request ko type tanna lai(manually assign gareko value haru ko lagi) 
 // typecsript ma esto garinxa aru kei pani haina testo complex kei pani xaina
 
-interface IExtendedRequest extends  Request{
-    user?: {             // we can also pass object here
-        email: string,
-        role: string,
-        userName: string | null
-    }
-}
+// interface IExtendedRequest extends  Request{
+//     user?: {             // we can also pass object here
+//         email: string,
+//         role: string,
+//         userName: string | null
+//     },
+//     // haha: string
+// }
 
 // interface IResult {
 //     id: string,
@@ -23,16 +25,14 @@ interface IExtendedRequest extends  Request{
 // }
 
 
-   const isLoggedIn = async (req: IExtendedRequest, res: Response, next: NextFunction)=>{
+   const isLoggedIn = async (req: IExtendedRequest, res: Response, next: NextFunction):Promise<void>=>{
     // check if login or not
 
     // --> token accept garney 
 
     console.log("login trigerred")
     
-
-   
-    const token = req.headers.authorization
+const token = req.headers.authorization
     if(!token){
         res.status(401).json({
             message: "Please provide token to continue"
@@ -54,7 +54,7 @@ interface IExtendedRequest extends  Request{
             // console.log(result, "Result ayo")
         //   const userData = await User.findAll({   --> This is wll give an array
         //         where: {
-        //             id: result.id
+        //             id: result.id 
         //         }
             // })
             // if(userData.length === 0){
@@ -74,11 +74,13 @@ interface IExtendedRequest extends  Request{
                 
             } else{
                 console.log("Userdata: ",userData)
+                // req.user= userData
                 req.user = {
                     email: userData.email,
                     role: userData.role,
                     userName: userData.username
                 }
+                // req.haha = "hehe" (Eha j dainxa teslai mathi type define garnu parxa compulsorily)
                 next()
             }
               

@@ -1,12 +1,8 @@
 import { Request, Response } from 'express';
 import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
-interface IExtendedRequest extends Request{
-    user? : {
-        name: string,
-        age: number
-    }
-}
+import { IExtendedRequest } from '../../middleware/type';
+
 class InstituteCntroller{
     static async createInstitute(req:IExtendedRequest, res:Response){
         if(req.body === undefined){
