@@ -25,7 +25,7 @@ import { IExtendedRequest } from "./type"
 // }
 
 
-   const isLoggedIn = async (req: IExtendedRequest, res: Response, next: NextFunction):Promise<void>=>{
+   const isLoggedIn = async (req: IExtendedRequest, res: Response, next: NextFunction)=>{
     // check if login or not
 
     // --> token accept garney 
@@ -73,14 +73,19 @@ const token = req.headers.authorization
                 })
                 
             } else{
-                console.log("Userdata: ",userData)
                 // req.user= userData
-                req.user = {
-                    email: userData.email,
-                    role: userData.role,
-                    userName: userData.username
-                }
+                // req.user = {
+                    
+                //     id: result.id,
+                //     email: userData.email,
+                //     role: userData.role,
+                //     userName: userData.username
+
+                // }
                 // req.haha = "hehe" (Eha j dainxa teslai mathi type define garnu parxa compulsorily)
+                console.log("Userdata: ",userData)
+                req.user = userData.dataValues
+                
                 next()
             }
               

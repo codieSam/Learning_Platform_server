@@ -1,6 +1,7 @@
 import { Request  } from "express"
 export interface IExtendedRequest extends Request{
-     user?: {             // we can also pass object here
+     user?: { 
+        id:string,            // we can also pass object here
         email: string,
         role: string,
         userName: string | null
@@ -8,5 +9,6 @@ export interface IExtendedRequest extends Request{
     // headers:{
     //     authorization: string
     // } & Request['headers']
-   
+
+    instituteNumber?:number | string
 }

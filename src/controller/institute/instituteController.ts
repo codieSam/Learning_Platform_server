@@ -1,11 +1,14 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
 import { IExtendedRequest } from '../../middleware/type';
+import User from '../../database/models/user.model';
 
-class InstituteCntroller{
-    static async createInstitute(req:IExtendedRequest, res:Response){
-        if(req.body === undefined){
+
+   const  createInstitute = async(req:IExtendedRequest, res:Response, next: NextFunction)=>{
+        
+   try{
+      if(req.body === undefined){
             res.status(500).json({
                 message: "The body is undefned"
             })
@@ -36,9 +39,12 @@ const instituteNumber = generateRandomInstituteNumber()
             instituteAddress VARCHAR(255) NOT NULL,
             institutePanNo VARCHAR(255),
             instituteVatNo VARCHAR(255),
+
             createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )`)
+
+          
 
         //insert values
 
@@ -54,26 +60,118 @@ const instituteNumber = generateRandomInstituteNumber()
                 replacements: [instituteName, instituteEmail, institutePhoneNumber, instituteAddress,institutePanNo || null,instituteVatNo || null]
             }
             )
-        res.status(200).json({
-        message: "Institute created!"
+     
+
+
+// Here i am going to create a history table for the users instutions
+
+        await sequelize.query (`CREATE TABLE IF NOT EXISTS user_institutes(
+            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            userId VARCHAR(255) REFERENCES users(id),
+            instituteNumber int UNIQUE
+            )`)
+            await sequelize.query(`INSERT INTO user_institutes(userId, instituteNumber)VALUES(?,?)`,{
+                replacements: [req.user?.id, instituteNumber]
+            })
+
+        // institutenumber lai user table ma lagerw rakhnu cha
+
+        // const user = User.findByPk(req.user && req.user.id)
+        // user?.currentInstituteNumber = instituteNumber
+        // await user?.save()
+
+    if(req.user){
+    User.update({       // another way
+            currentInstituteNumber : instituteNumber,
+            role: "institute"
+        },{
+            where: {
+                id: req.user?.id
+            }
         })
 
+        // res.status(200).json({
+        //     message:"User updated successfully"
+        // })
+
+    // await sequelize.query(`UPDATE User SET currentInstituteNumber == ${instituteNumber} WHERE id == ${req.user.id} `)
+    }
+        
+    req.instituteNumber = instituteNumber
+    next()
+
+   }catch(e){
+    console.error("Error occured: ", e)
+    res.status(500).json({
+                    message: "Error occured while creating the institute on institute part!!!", 
+                })
+   }
+    
+ 
+  
+    
+
     }
 
-    // static async createTeacherTable (req: Request, res: Response){
-    //     await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
-    //         id INT PRIMARY KEY AUTO_INCREMENT,
-    //         teacherName VARCHAR(255) NOT NULL,
-    //         teacherEmail VARCHAR(255) NOT NULL UNIQUE,
-    //         teacherPhoneNumber VRCHAR(255) NOT NULL UNIQUE
-    //         ) VALUES (?,?,?,?)`,
-            
-    //     )
-            
-    //     }
-    
-    
+    const  createTeacher =async(req:IExtendedRequest, res:Response, next:NextFunction)=>{
+        try{
+           const instituteNumber = req.instituteNumber
+await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            teacherName VARCHAR(255) NOT NULL,
+            teacherEmail VARCHAR(255) NOT NULL,
+            teacherPhoneNumber VARCHAR(255) NOT NULL
+            ) `)
+        }catch(e){
+            console.error("An error occured on teachers table : ", e)
+            res.status(500).json({
+                    message: "Error occured while creating the institute on teacher part!!!"
+                })
+        }
+
+next()
+        
     }
 
+    const createStudent = async (req:IExtendedRequest, res:Response, next:NextFunction)=>{
+        try{
+            const instituteNumber = req.instituteNumber
+            await sequelize.query(`CREATE TABLE IF NOT EXISTS student_${instituteNumber}(
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                studentName VARCHAR(255) NOT NULL,
+                studentEmail VARCHAR(255) NOT NULL,
+                studentPhoneNumber VARCHAR(255) NOT NULL
+                )`)
+        }catch(e){
+            console.error("An error occured on student function: ", e)
+            res.status(500).json({
+                    message: "Error occured while creating the institute on student part!!!"
+                })
+        }
+        next()
+    }
 
-        export default InstituteCntroller
+    const createCourse = async (req:IExtendedRequest, res:Response)=>{
+        try{
+            const instituteNumber = req.instituteNumber
+            console.log("INst NUmber is :",instituteNumber)
+            await sequelize.query(`CREATE TABLE course_${instituteNumber}(
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                courseName VARCHAR(255) NOT NULL,
+                coursePrice VARCHAR(255) NOT NULL
+                )`)
+                res.status(200).json({
+                    message: "Finally institute create vayo hai !!!",
+                    Institute_id: instituteNumber
+                })
+        }catch(e){
+            console.error("An error occured on course function: ", e)
+           res.status(500).json({
+                    message: "Error occured while creating the institute on course part!!!"
+                })
+        }
+    }
+    
+
+
+        export {createInstitute, createTeacher, createStudent,createCourse}
