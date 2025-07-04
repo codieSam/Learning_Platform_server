@@ -66,7 +66,10 @@ const token = req.headers.authorization
             // }
 
 
-            const userData = await User.findByPk(result.id)   //This will give an Object
+            const userData = await User.findByPk(result.id, {
+                //k k data ligney tw vanney decide attribute ma garinxa 
+                attributes: ['id','currentInstituteNumber', 'email','username','role']
+            })   //This will give an Object
                 if(!userData){
                 res.status(403).json({
                     message: "NO user with that id, Invalid token"

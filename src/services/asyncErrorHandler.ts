@@ -13,6 +13,7 @@ import   { Request, Response, NextFunction } from "express"
 const asyncErrorHndler =(fn:Function)=>{ 
     return (req:Request,res:Response ,next:NextFunction)=>{
         fn(req,res,next).catch((e:Error)=>{
+            console.log(e)
             return res.status(500).json({
                 message: e.message,
                 fullError: e

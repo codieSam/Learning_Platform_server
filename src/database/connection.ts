@@ -22,7 +22,7 @@ sequelize
 //migration/push
 
 sequelize
-  .sync({ alter: false })
+  .sync({ alter: true })
   .then(() => {
     console.log("Migrated sucessfully");
   })

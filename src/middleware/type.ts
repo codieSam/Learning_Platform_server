@@ -4,11 +4,13 @@ export interface IExtendedRequest extends Request{
         id:string,            // we can also pass object here
         email: string,
         role: string,
-        userName: string | null
+        userName: string | null,
+        currentInstituteNumber: string
+
     },
     // headers:{
     //     authorization: string
     // } & Request['headers']
 
-    instituteNumber?:number | string
+    
 }
