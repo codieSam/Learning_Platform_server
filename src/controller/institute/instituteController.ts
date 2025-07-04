@@ -7,7 +7,7 @@ import User from '../../database/models/user.model';
 
    const  createInstitute = async(req:IExtendedRequest, res:Response, next: NextFunction)=>{
         
-   try{
+ 
       if(req.body === undefined){
             res.status(500).json({
                 message: "The body is undefned"
@@ -100,21 +100,15 @@ const instituteNumber = generateRandomInstituteNumber()
     req.instituteNumber = instituteNumber
     next()
 
-   }catch(e){
-    console.error("Error occured: ", e)
-    res.status(500).json({
-                    message: "Error occured while creating the institute on institute part!!!", 
-                })
    }
-    
  
   
     
 
-    }
+
 
     const  createTeacher =async(req:IExtendedRequest, res:Response, next:NextFunction)=>{
-        try{
+       
            const instituteNumber = req.instituteNumber
 await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
             id INT PRIMARY KEY AUTO_INCREMENT,
@@ -122,19 +116,14 @@ await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
             teacherEmail VARCHAR(255) NOT NULL,
             teacherPhoneNumber VARCHAR(255) NOT NULL
             ) `)
-        }catch(e){
-            console.error("An error occured on teachers table : ", e)
-            res.status(500).json({
-                    message: "Error occured while creating the institute on teacher part!!!"
-                })
-        }
+       
 
 next()
         
     }
 
     const createStudent = async (req:IExtendedRequest, res:Response, next:NextFunction)=>{
-        try{
+     
             const instituteNumber = req.instituteNumber
             await sequelize.query(`CREATE TABLE IF NOT EXISTS student_${instituteNumber}(
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -142,17 +131,12 @@ next()
                 studentEmail VARCHAR(255) NOT NULL,
                 studentPhoneNumber VARCHAR(255) NOT NULL
                 )`)
-        }catch(e){
-            console.error("An error occured on student function: ", e)
-            res.status(500).json({
-                    message: "Error occured while creating the institute on student part!!!"
-                })
-        }
+        
         next()
     }
 
     const createCourse = async (req:IExtendedRequest, res:Response)=>{
-        try{
+        
             const instituteNumber = req.instituteNumber
             console.log("INst NUmber is :",instituteNumber)
             await sequelize.query(`CREATE TABLE course_${instituteNumber}(
@@ -164,12 +148,7 @@ next()
                     message: "Finally institute create vayo hai !!!",
                     Institute_id: instituteNumber
                 })
-        }catch(e){
-            console.error("An error occured on course function: ", e)
-           res.status(500).json({
-                    message: "Error occured while creating the institute on course part!!!"
-                })
-        }
+       
     }
     
 
