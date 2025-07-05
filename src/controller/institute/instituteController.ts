@@ -3,6 +3,7 @@ import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
 import { IExtendedRequest } from '../../middleware/type';
 import User from '../../database/models/user.model';
+import { captureRejectionSymbol } from 'events';
 
 
    const  createInstitute = async(req:IExtendedRequest, res:Response, next: NextFunction)=>{
@@ -110,6 +111,7 @@ const instituteNumber = generateRandomInstituteNumber()
     const  createTeacher =async(req:IExtendedRequest, res:Response, next:NextFunction)=>{
        
            const instituteNumber = req.user?.currentInstituteNumber
+           console.log("The institute number is : ", instituteNumber)
 await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
             id INT PRIMARY KEY AUTO_INCREMENT,
             teacherName VARCHAR(255) NOT NULL,

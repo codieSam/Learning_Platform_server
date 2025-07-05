@@ -26,7 +26,7 @@ const deleteCourse = async(req:IExtendedRequest, res: Response)=>{
     const courseId = req.params.id
 
     // ast first check that if the course is exists or not
-    //given query give an array
+    //given query gives an array
    const [courseData] =  await sequelize.query(`SELECT * FROM course_${instituteNumber} WHERE id = ?`,{
         replacements: [courseId]
     })
