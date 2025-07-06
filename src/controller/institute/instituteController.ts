@@ -3,6 +3,7 @@ import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
 import { IExtendedRequest } from '../../middleware/type';
 import User from '../../database/models/user.model';
+import categories from '../../../seed';
 
 
    const  createInstitute = async(req:IExtendedRequest, res:Response, next: NextFunction)=>{
@@ -172,5 +173,26 @@ next()
     }
     
 
+    const createCategory = async(req:IExtendedRequest, res:Response, next:NextFunction)=>{
+        const instituteNumber = req.user?.currentInstituteNumber
+        await sequelize.query(`CREATE TABLE IF NOT EXISTS category_${instituteNumber}(
+            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            categoryName VARCHAR(100) NOT NULL,
+            categoryDescription TEXT NOT NULL,
+            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )`)
 
-        export {createInstitute, createTeacher, createStudent,createCourse}
+            categories.forEach(async function(category){
+            await sequelize.query(`INSERT INTO category_${instituteNumber}(categoryName, categoryDescription) VALUES (?,?)`,{
+                replacements: [category.categoryName, category.categoryDescription ]
+            })  // Data seeding
+            })
+
+            
+            next()
+    }
+
+
+
+        export {createInstitute, createTeacher, createStudent,createCourse, createCategory}
