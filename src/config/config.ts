@@ -12,4 +12,9 @@ export const envConfig = {
   // dbDialect: process.env.DB_DIALECT,
 
   jwtSecret: process.env.JWT_SECRET,
+
+  cloudinaryCloudName : process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryApiKey : process.env.CLOUDINARY_API_KEY,
+  cloudinarySecretKey: process.env.CLOUDINARY_SECRET_KEY
+  
 };

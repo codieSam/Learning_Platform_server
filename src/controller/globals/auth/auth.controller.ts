@@ -111,7 +111,7 @@ email login (sso)
           token: token,
           message: "Login successful"
         })
-        res.cookie("token", token)
+        // res.cookie("token", token)
       } else {
         res.status(401).json({
           message: "Invalid email or password",

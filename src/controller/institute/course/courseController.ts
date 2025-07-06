@@ -5,19 +5,24 @@ import { IExtendedRequest } from "../../../middleware/type"
 const createCourse =async (req:IExtendedRequest,res:Response)=>{
     const instituteNumber = req.user?.currentInstituteNumber
     const {coursePrice, courseName, courseDescription, courseDuration ,courseLevel} = req.body
+  
     if(!courseName || !courseDescription || !courseDuration || !coursePrice || !courseLevel ){
         res.status(400).json({
             message: "Please provide all course details"
         })
     }
-    const courseThumbnail = "Voli aunxa hai tw "
+    // console.log(req.file, "File")
+    // const courseThumbnail = req.file ? req.file.filename : "null"  --> for local storage
+    const courseThumbnail = req.file ? req.file.path : null    // for cloud storage
+    console.log(courseThumbnail, "The course thumbnail address")
   const returnedData =  await sequelize.query(`INSERT INTO course_${instituteNumber} (coursePrice, courseName, courseDescription,courseThumbnail, courseDuration ,courseLevel)
-        VALUES(?,?,?,?,?)`,{
-            replacements: [coursePrice,courseName, courseDescription, courseThumbnail || null, courseDuration,courseLevel]
+        VALUES(?,?,?,?,?,?)`,{
+            replacements: [coursePrice,courseName, courseDescription, courseThumbnail, courseDuration,courseLevel]
         })
         console.log(returnedData),
         res.status(200).json({
-            message: "Course created successfully"
+            message: "Course created successfully",
+            course_id: instituteNumber
         })
 }
 

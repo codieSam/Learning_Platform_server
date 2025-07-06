@@ -1,9 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import sequelize from '../../database/connection';
 import generateRandomInstituteNumber from '../../services/instituteRandomNo';
 import { IExtendedRequest } from '../../middleware/type';
 import User from '../../database/models/user.model';
-import { captureRejectionSymbol } from 'events';
 
 
    const  createInstitute = async(req:IExtendedRequest, res:Response, next: NextFunction)=>{
@@ -97,7 +96,10 @@ const instituteNumber = generateRandomInstituteNumber()
 
     // await sequelize.query(`UPDATE User SET currentInstituteNumber == ${instituteNumber} WHERE id == ${req.user.id} `)
     }
-        
+       
+    if(req.user){
+        req.user.currentInstituteNumber = instituteNumber
+    }
    
     next()
 
@@ -153,7 +155,7 @@ next()
             console.log("INst NUmber is :",instituteNumber)
             await sequelize.query(`CREATE TABLE course_${instituteNumber}(
                 id INT PRIMARY KEY AUTO_INCREMENT,
-                courseName VARCHAR(255) NOT NULL,
+                courseName VARCHAR(255) NOT NULL UNIQUE,
                 coursePrice VARCHAR(255) NOT NULL,
                 courseDescription TEXT NOT NULL,
                 courseDuration VARCHAR(100) NOT NULL,
@@ -163,7 +165,7 @@ next()
                 updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 )`)
                 res.status(200).json({
-                    message: "Finally institute create vayo hai !!!",
+                    message: "Institute created successfully",
                     Institute_id: instituteNumber
                 })
        
