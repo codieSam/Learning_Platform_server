@@ -31,10 +31,10 @@ const router:Router = express.Router()
 router.route('/')
 // upload.single/array('filename -> frontend or postman bata k name vako field bata file aundai cha vanney specify garney')
 .post(isLoggedIn,upload.single('courseThumbnail'), asyncErrorHndler(createCourse))
-.get(asyncErrorHndler(getAllCourse))
+.get(isLoggedIn,asyncErrorHndler(getAllCourse))
 
 router.route('/:id')
-.get(asyncErrorHndler(getSingleCourse))
+.get(isLoggedIn, asyncErrorHndler(getSingleCourse))
 .delete(isLoggedIn, asyncErrorHndler(deleteCourse))
 
 export default router
