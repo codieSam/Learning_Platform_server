@@ -3,6 +3,7 @@ import { IExtendedRequest } from "../../../middleware/type";
 import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
 import generateRandomPassword from "../../../services/generateRandomPassword";
+import sendMail from "../../../services/sendMail";
 
 const createTeacher =async (req:IExtendedRequest, res:Response)=>{
     
@@ -34,6 +35,17 @@ const createTeacher =async (req:IExtendedRequest, res:Response)=>{
         type:QueryTypes.UPDATE,
         replacements: [teacherData[0].id, courseId]
     })
+
+    //send mail function 
+    const mailInformation = {
+        to: teacherEmail,
+        subject : "This is subject",
+        text :`Me/Ms: ${teacherName}, This is the reason why i mailed you , this is your password for this platform ${pwData.plainVersion}`
+    }
+    
+    await sendMail(mailInformation);
+
+
      res.status(200).json({
         message: "Teacher added successfully"
     })

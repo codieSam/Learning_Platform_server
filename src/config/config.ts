@@ -15,6 +15,9 @@ export const envConfig = {
 
   cloudinaryCloudName : process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey : process.env.CLOUDINARY_API_KEY,
-  cloudinarySecretKey: process.env.CLOUDINARY_SECRET_KEY
+  cloudinarySecretKey: process.env.CLOUDINARY_SECRET_KEY,
   
+
+  mailUser: process.env.MAIL_USER,
+  mailPass: process.env.MAIL_PASS
 };
