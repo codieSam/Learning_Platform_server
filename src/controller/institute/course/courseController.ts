@@ -1,12 +1,13 @@
 import { Request,Response } from "express"
 import sequelize from "../../../database/connection"
 import { IExtendedRequest } from "../../../middleware/type"
+import { QueryTypes } from "sequelize"
 
 const createCourse =async (req:IExtendedRequest,res:Response)=>{
     const instituteNumber = req.user?.currentInstituteNumber
-    const {coursePrice, courseName, courseDescription, courseDuration ,courseLevel} = req.body
+    const {coursePrice, courseName, courseDescription, courseDuration ,courseLevel, categoryId} = req.body
   
-    if(!courseName || !courseDescription || !courseDuration || !coursePrice || !courseLevel ){
+    if(!courseName || !courseDescription || !courseDuration || !coursePrice || !courseLevel || !categoryId){
         res.status(400).json({
             message: "Please provide all course details"
         })
@@ -15,9 +16,10 @@ const createCourse =async (req:IExtendedRequest,res:Response)=>{
     // const courseThumbnail = req.file ? req.file.filename : "null"  --> for local storage
     const courseThumbnail = req.file ? req.file.path : null    // for cloud storage
     console.log(courseThumbnail, "The course thumbnail address")
-  const returnedData =  await sequelize.query(`INSERT INTO course_${instituteNumber} (coursePrice, courseName, courseDescription,courseThumbnail, courseDuration ,courseLevel)
-        VALUES(?,?,?,?,?,?)`,{
-            replacements: [coursePrice,courseName, courseDescription, courseThumbnail, courseDuration,courseLevel]
+  const returnedData =  await sequelize.query(`INSERT INTO course_${instituteNumber} (coursePrice, courseName, courseDescription,courseThumbnail, courseDuration ,courseLevel,categoryId)
+        VALUES(?,?,?,?,?,?,?)`,{
+            
+            replacements: [coursePrice,courseName, courseDescription, courseThumbnail, courseDuration,courseLevel,categoryId]
         })
         console.log(returnedData),
         res.status(200).json({
@@ -43,7 +45,8 @@ const deleteCourse = async(req:IExtendedRequest, res: Response)=>{
     }
 
 await sequelize.query(`DELETE FROM course_${instituteNumber} WHERE id = ?`, {
-    replacements: [courseId]
+    replacements: [courseId],
+    type: QueryTypes.DELETE
 })
 res.status(200).json({
     message: "Course deleted successfully !"
@@ -53,17 +56,27 @@ res.status(200).json({
 
 const getAllCourse = async (req: IExtendedRequest, res:Response)=>{
     const instituteNumber = req.user?.currentInstituteNumber
-   const courses = await sequelize.query(`SELECT * FROM course_${instituteNumber}`)
-    res.status(200).json({
+   const courses = await sequelize.query(`SELECT * FROM course_${instituteNumber} JOIN category_${instituteNumber} ON course_${instituteNumber}.categoryId = category_${instituteNumber}.id`,{
+    type: QueryTypes.SELECT
+   })
+   if(courses.length > 0){
+res.status(200).json({
         message: "Course fetched !",
-        data: courses || []
+        data: courses 
     })
+   } else{
+    res.status(400).json({
+        message: "No data found"
+    })
+   }
+    
 }
 const getSingleCourse = async (req:IExtendedRequest, res:Response)=>{
     const instituteNumber = req.user?.currentInstituteNumber
    const courseId = req.params.id
    const course =  await sequelize.query(`SELECT * FROM course_${instituteNumber} WHERE curseId = ?`,{
-        replacements: [courseId]
+        replacements: [courseId],
+        type: QueryTypes.SELECT
     })
     res.status(200).json({
         message: "Sngle with given id is fetched",
