@@ -4,6 +4,7 @@ import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
 import generateRandomPassword from "../../../services/generateRandomPassword";
 import sendMail from "../../../services/sendMail";
+import { text } from "stream/consumers";
 
 const createTeacher =async (req:IExtendedRequest, res:Response)=>{
     
@@ -39,8 +40,9 @@ const createTeacher =async (req:IExtendedRequest, res:Response)=>{
     //send mail function 
     const mailInformation = {
         to: teacherEmail,
-        subject : "This is subject",
-        text :`Me/Ms: ${teacherName}, This is the reason why i mailed you , this is your password for this platform ${pwData.plainVersion}`
+        subject : "Mail by Samrat ! ",
+        text :`Mr/Ms.: ${teacherName}, This is the reason why i mailed you , this is your password for this learning platform,<b> Password:  ${pwData.plainVersion} `,
+        html: text
     }
     
     await sendMail(mailInformation);
