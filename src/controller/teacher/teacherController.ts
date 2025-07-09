@@ -49,7 +49,7 @@ if(!teacherEmail || !teacherPassword || !teacherInstituteNumber){
     // token genenration
 
    
-    const token = generateJwtToken(teacherData[0].id)
+    const token = generateJwtToken({id: teacherData[0].id, instituteNumber: teacherInstituteNumber})
     res.status(200).json({
         message: "Teacher logged in ",
         token: token
@@ -57,3 +57,5 @@ if(!teacherEmail || !teacherPassword || !teacherInstituteNumber){
    }
 
 }
+
+export {teacherLogin}

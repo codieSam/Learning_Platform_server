@@ -105,7 +105,7 @@ email login (sso)
 
       if (isPasswordMatch) {
         //  login vayo, token generation
-       const token =  generateJwtToken(data[0].id as string)
+       const token =  generateJwtToken({id: data[0].id as string})
        console.log("Token generated: ", token);
         // send token to client
         res.json({
