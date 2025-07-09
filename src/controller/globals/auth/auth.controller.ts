@@ -20,6 +20,7 @@ import User from "../../../database/models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { envConfig } from "../../../config/config";
+import generateJwtToken from "../../../services/generateJwtToken";
 // import { register } from "module";
 
 // JSON data --> req.body()   //username, email, password
@@ -104,7 +105,7 @@ email login (sso)
 
       if (isPasswordMatch) {
         //  login vayo, token generation
-       const token =  jwt.sign({id: data[0].id}, securityKey,{expiresIn: "30Days"});
+       const token =  generateJwtToken(data[0].id as string)
        console.log("Token generated: ", token);
         // send token to client
         res.json({

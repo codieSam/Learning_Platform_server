@@ -41,8 +41,8 @@ const createTeacher =async (req:IExtendedRequest, res:Response)=>{
     const mailInformation = {
         to: teacherEmail,
         subject : "Mail by Samrat ! ",
-        text :`Mr/Ms.: ${teacherName}, This is the reason why i mailed you , this is your password for this learning platform,<b> Password:  ${pwData.plainVersion} `,
-        html: text
+        text :`Mr/Ms.: ${teacherName}, This is the reason why i mailed you , this is your password for this learning platform,<b> Password:  ${pwData.plainVersion}, and your institute number is: ${instituteNumber}`
+        
     }
     
     await sendMail(mailInformation);
